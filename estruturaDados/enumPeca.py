@@ -7,5 +7,5 @@ tipoPeca = {
     'rei': 'king'
 }
 
-
 tabuleiro = Tabuleiro()
+tabuleiro.printInWeb()
