@@ -4,31 +4,53 @@ from  peca import Peca
 
 def iniciaTabuleiro():
     matriz = []
+    
+    defaultValues = [Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio')]
+    
     for i in range(11):
-        linhaDePecas = [Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio'),Peca('vazio')]
+        linhaDePecas = defaultValues
         matriz.append(linhaDePecas)
+
     return matriz
 
-# positivo vertical, negativo horizontal
 def objetoInicializacao():
     return(
         [
             {
                 'tipo': 'mercenario',
-                'posicao': [{}]
+                'posicoes': [
+                    (0,0),
+                ]
+            },
+            {
+                'tipo': 'soldado',
+                'posicoes': [
+                    (0,1),
+                ]
+            },
+            {
+                'tipo': 'rei',
+                'posicoes': [
+                    (0,1),
+                ]
             }
         ]
     )
-
-
-
 
 class Tabuleiro:
 
     def __init__(self):
         matriz = iniciaTabuleiro()
         self.matriz = matriz
-        #Posiciona peças
-        
 
+        pecas = objetoInicializacao()
+
+        for peca in pecas:  
+            tipo = peca['tipo']
+            posicoes = peca['posicao']
+            for posicao in posicoes:
+                x = posicao[0]
+                y = posicao[1]
+                self.matriz[x][y] = Peca(tipo)
+        
 
