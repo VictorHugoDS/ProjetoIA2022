@@ -1,15 +1,17 @@
 from copyreg import constructor
 
 
-tipoPeca = {"mercenario": "merc", "soldado": "sold", "vazio": None, "rei": "king"}
-
-
 class Peca:
-    def __init__(self, tipo):
+    def __init__(self, tipo, x: int, y: int):
         self.tipo = tipoPeca[tipo]
+        self.x = x
+        self.y = y
 
     def morte(self):
         del self
+
+
+tipoPeca = {"mercenario": "merc", "soldado": "sold", "vazio": None, "rei": "king"}
 
 
 def iniciaTabuleiro():
@@ -17,17 +19,17 @@ def iniciaTabuleiro():
 
     for i in range(11):
         defaultValues = [
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
-            Peca("vazio"),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
+            Peca("vazio", 0, 0),
         ]
         linhaDePecas = defaultValues
         matriz.append(linhaDePecas)
@@ -64,18 +66,36 @@ def objetoInicializacao():
                 (10, 6),
                 (10, 7),
                 (9, 5),
+                (3, 10),
+                (4, 10),
+                (5, 10),
+                (6, 10),
+                (7, 10),
+                (5, 9),
+                (0, 3),
             ],
         },
         {
             "tipo": "soldado",
             "posicoes": [
-                (0, 1),
+                (5, 4),
+                (5, 6),
+                (5, 7),
+                (5, 3),
+                (4, 4),
+                (4, 6),
+                (6, 4),
+                (6, 6),
+                (7, 5),
+                (6, 5),
+                (4, 5),
+                (3, 5),
             ],
         },
         {
             "tipo": "rei",
             "posicoes": [
-                (0, 1),
+                (5, 5),
             ],
         },
     ]
@@ -90,7 +110,7 @@ class Tabuleiro:
             for posicao in peca["posicoes"]:
                 x = posicao[0]
                 y = posicao[1]
-                self.matrix[x][y] = Peca(peca["tipo"])
+                self.matrix[x][y] = Peca(peca["tipo"], x, y)
         self.printInTerminal()
 
     def printInTerminal(self):
@@ -99,7 +119,7 @@ class Tabuleiro:
             for peca in linha:
                 tipo = peca.tipo
                 if tipo == None:
-                    print("x", end=" ")
+                    print("----", end=" ")
                 else:
                     print(tipo, end=" ")
             print()
@@ -121,14 +141,14 @@ class Tabuleiro:
             for peca in linha:
                 tipo = peca.tipo
                 if tipo == None:
-                    html += "<td>x</td>"
+                    html += "<td>xxx</td>"
                 else:
                     if tipo == "merc":
-                        html += "<td style='background-color: red;'>merc</td>"
+                        html += "<td>💰</td>"
                     elif tipo == "sold":
-                        html += "<td style='background-color: green;'>sold</td>"
+                        html += "<td>🪖</td>"
                     elif tipo == "king":
-                        html += "<td style='background-color: blue;'>king</td>"
+                        html += "<td>👑</td>"
             html += "</tr>"
         html += "</table>"
         html += "</body>"

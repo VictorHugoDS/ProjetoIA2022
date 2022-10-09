@@ -6,4 +6,5 @@ from estruturaDados.peca import Peca
 # tipos de movimentos
 
 
-def bestMoveSoldier(tabuleiro:Tabuleiro, soldado:Peca):
+def bestMoveSoldier(tabuleiro: Tabuleiro, soldado: Peca):
+    print("ok")
