@@ -2,6 +2,8 @@ from copyreg import constructor
 from time import sleep
 
 from peca import Peca
+from contants import TabuleiroTamanho, PontosDeVitoria
+from utils import DevLog
 
 tipoPeca = {"mercenario": "merc", "soldado": "sold", "vazio": None, "rei": "king"}
 
@@ -9,7 +11,7 @@ tipoPeca = {"mercenario": "merc", "soldado": "sold", "vazio": None, "rei": "king
 def iniciaTabuleiro():
     matriz = []
 
-    for i in range(11):
+    for i in range(TabuleiroTamanho):
         defaultValues = [
             Peca("vazio", 0, 0),
             Peca("vazio", 0, 0),
@@ -107,8 +109,68 @@ class Tabuleiro:
                     print("/////////////////////////////")
                     print(self.pecasProximasAUmaPeca(Peca(peca["tipo"], x, y)))
                     print("/////////////////////////////")
-        print("[Tabuleiro] Tabuleiro inicializado com sucesso!")
-        print()
+        DevLog("[Tabuleiro] Tabuleiro inicializado com sucesso!")
+        DevLog()
+
+    def checarMovimento(self, x, y):
+        tabuleiro = self.matrix
+        if x < 0 or x > TabuleiroTamanho or y < 0 or y > TabuleiroTamanho:
+            return False
+        if tabuleiro[x][y].tipo == None:
+            return True
+
+        return False
+
+    # retorna uma lista de tuplas com as posições possíveis
+    def checarMovimentosPossiveis(self, peca):
+        copiaPeca = peca
+        movimentosPossiveis = []
+
+        # (x,y)
+        esquerda_futuro = (copiaPeca.x - 1, copiaPeca.y)
+        direita_futuro = (copiaPeca.x + 1, copiaPeca.y)
+        cima_futuro = (copiaPeca.x, copiaPeca.y + 1)
+        baixo_futuro = (copiaPeca.x, copiaPeca.y - 1)
+
+        movimentosFuturos = [esquerda_futuro, direita_futuro, cima_futuro, baixo_futuro]
+
+        DevLog(
+            "[Tabuleiro] Checando movimentos possíveis para a peça:",
+        )
+        DevLog(
+            copiaPeca.x,
+            copiaPeca.y,
+            copiaPeca.tipo,
+        )
+        DevLog()
+
+        # testa movimentos
+        for movimento in movimentosFuturos:
+            x_internal = movimento[0]
+            y_internal = movimento[1]
+            DevLog("[Tabuleiro] Checando movimento: ", x_internal, y_internal)
+
+            if self.checarMovimento(x_internal, y_internal):
+                DevLog("[Tabuleiro] Movimento possível: ", x_internal, y_internal)
+                movimentosPossiveis.append((x_internal, y_internal))
+
+        return movimentosPossiveis
+
+    def pecasMercenarios(self):
+        pecas = []
+        for linha in self.matrix:
+            for peca in linha:
+                if peca.tipo == "merc":
+                    pecas.append(peca)
+        return pecas
+
+    def pecasSoldados(self):
+        pecas = []
+        for linha in self.matrix:
+            for peca in linha:
+                if peca.tipo == "sold" or peca.tipo == "king":
+                    pecas.append(peca)
+        return pecas
 
     def pecasProximasAUmaPeca(self,peca:Peca):
         
@@ -173,13 +235,18 @@ class Tabuleiro:
         for linha in self.matrix:
             for peca in linha:
                 tipo = peca.tipo
+                x = peca.x
+                y = peca.y
+
                 if tipo == None:
-                    print("----", end=" ")
+                    print(" ", end=" ")
+                    DevLog("----", end=" ")
                 else:
-                    print(tipo, end=" ")
-            print()
-        print()
-        print("[Tabuleiro] Tabuleiro impresso no terminal com sucesso!")
+                    DevLog(tipo, end=" ")
+
+            DevLog()
+        DevLog()
+        DevLog("[Tabuleiro] Tabuleiro impresso no terminal com sucesso!")
 
     def printInWeb(self):
         html = ""
