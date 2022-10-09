@@ -1,3 +1,6 @@
+from copyreg import constructor
+
+
 tipoPeca = {"mercenario": "merc", "soldado": "sold", "vazio": None, "rei": "king"}
 
 
@@ -12,21 +15,20 @@ class Peca:
 def iniciaTabuleiro():
     matriz = []
 
-    defaultValues = [
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-        Peca("vazio"),
-    ]
-
     for i in range(11):
+        defaultValues = [
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+            Peca("vazio"),
+        ]
         linhaDePecas = defaultValues
         matriz.append(linhaDePecas)
 
@@ -85,27 +87,52 @@ class Tabuleiro:
         pecas = objetoInicializacao()
 
         for peca in pecas:
-            tipo = peca["tipo"]
-            posicoes = peca["posicoes"]
-            for posicao in posicoes:
+            for posicao in peca["posicoes"]:
                 x = posicao[0]
                 y = posicao[1]
-                self.matrix[x][y] = Peca(tipo)
+                self.matrix[x][y] = Peca(peca["tipo"])
+        self.printInTerminal()
+
+    def printInTerminal(self):
+        self.printInWeb()
+        for linha in self.matrix:
+            for peca in linha:
+                tipo = peca.tipo
+                if tipo == None:
+                    print("x", end=" ")
+                else:
+                    print(tipo, end=" ")
+            print()
 
     def printInWeb(self):
         html = ""
+        # add html header
+        html += "<!DOCTYPE html>"
+        html += "<html>"
+        html += "<head>"
+        html += "<title>Tabuleiro</title>"
+        html += "</head>"
+        html += "<body>"
+
+        # add html body
+        html += "<table>"
         for linha in self.matrix:
             html += "<tr>"
             for peca in linha:
                 tipo = peca.tipo
                 if tipo == None:
-                    html += "<td></td>"
+                    html += "<td>x</td>"
                 else:
-                    html += "<td>" + tipo + "</td>"
+                    if tipo == "merc":
+                        html += "<td style='background-color: red;'>merc</td>"
+                    elif tipo == "sold":
+                        html += "<td style='background-color: green;'>sold</td>"
+                    elif tipo == "king":
+                        html += "<td style='background-color: blue;'>king</td>"
             html += "</tr>"
-
-        html_grid = "<table>" + html + "</table>"
+        html += "</table>"
+        html += "</body>"
 
         # save html
         with open("tabuleiro.html", "w") as f:
-            f.write(html_grid)
+            f.write(html)
