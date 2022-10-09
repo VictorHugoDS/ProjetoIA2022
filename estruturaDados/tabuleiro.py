@@ -99,18 +99,28 @@ class Tabuleiro:
     def __init__(self):
         self.matrix = iniciaTabuleiro()
         pecas = objetoInicializacao()
+        self.posicaoRei = (5, 5)
 
         for peca in pecas:
             for posicao in peca["posicoes"]:
                 x = posicao[0]
                 y = posicao[1]
                 self.matrix[x][y] = Peca(peca["tipo"], x, y)
-                if(x==6 and y==6):
-                    print("/////////////////////////////")
-                    print(self.pecasProximasAUmaPeca(Peca(peca["tipo"], x, y)))
-                    print("/////////////////////////////")
+                if peca["tipo"] == "king":
+                    self.posicaoRei = (x, y)
         DevLog("[Tabuleiro] Tabuleiro inicializado com sucesso!")
         DevLog()
+
+    def pegarPosicaoRei(self):
+        return self.posicaoRei
+
+    def moverPeca(self, peca, x, y):
+        if peca.tipo == "king":
+            self.posicaoRei = (x, y)
+
+        self.matrix[peca.x][peca.y] = Peca("vazio", peca.x, peca.y)
+        self.matrix[x][y] = peca
+        peca.mover(x, y)
 
     def checarMovimento(self, x, y):
         tabuleiro = self.matrix
@@ -172,63 +182,61 @@ class Tabuleiro:
                     pecas.append(peca)
         return pecas
 
-    def pecasProximasAUmaPeca(self,peca:Peca):
-        
+    def pecasProximasAUmaPeca(self, peca: Peca):
+
         x = peca.x
         y = peca.y
         pecas = {}
-        posicaoInvestigada = [None,x,y]
-        pecavazia = Peca('vazio', x, y)
+        posicaoInvestigada = [None, x, y]
+        pecavazia = Peca("vazio", x, y)
 
-        #encontra peça superior
-        while(posicaoInvestigada[0]==None):
-            if(y==0 or posicaoInvestigada[2]==0):
+        # encontra peça superior
+        while posicaoInvestigada[0] == None:
+            if y == 0 or posicaoInvestigada[2] == 0:
                 posicaoInvestigada[0] = pecavazia
             else:
-                if(self.matrix[x][y-1].tiposIguais(pecavazia) == False):
-                    posicaoInvestigada[0] = self.matrix[x][y-1]
+                if self.matrix[x][y - 1].tiposIguais(pecavazia) == False:
+                    posicaoInvestigada[0] = self.matrix[x][y - 1]
             posicaoInvestigada[2] += -1
-        
-        pecas['superior']=posicaoInvestigada[0]
-        posicaoInvestigada = [None,x,y]
 
+        pecas["superior"] = posicaoInvestigada[0]
+        posicaoInvestigada = [None, x, y]
 
-        #encontra peça inferior
-        while(posicaoInvestigada[0]==None):
-            if(y==10 or posicaoInvestigada[2]==10):
+        # encontra peça inferior
+        while posicaoInvestigada[0] == None:
+            if y == 10 or posicaoInvestigada[2] == 10:
                 posicaoInvestigada[0] = pecavazia
             else:
-                if(self.matrix[x][y+1].tiposIguais(pecavazia) == False):
-                    posicaoInvestigada[0] = self.matrix[x][y+1]
+                if self.matrix[x][y + 1].tiposIguais(pecavazia) == False:
+                    posicaoInvestigada[0] = self.matrix[x][y + 1]
             posicaoInvestigada[2] += 1
 
-        pecas['inferior']=posicaoInvestigada[0]
-        posicaoInvestigada = [None,x,y]
+        pecas["inferior"] = posicaoInvestigada[0]
+        posicaoInvestigada = [None, x, y]
 
-        #encontra peça a esquerda
-        while(posicaoInvestigada[0]==None):
-            if(x==0 or posicaoInvestigada[1]==0):
+        # encontra peça a esquerda
+        while posicaoInvestigada[0] == None:
+            if x == 0 or posicaoInvestigada[1] == 0:
                 posicaoInvestigada[0] = pecavazia
             else:
-                if(self.matrix[x-1][y].tiposIguais(pecavazia) == False):
-                    posicaoInvestigada[0] = self.matrix[x-1][y]
+                if self.matrix[x - 1][y].tiposIguais(pecavazia) == False:
+                    posicaoInvestigada[0] = self.matrix[x - 1][y]
             posicaoInvestigada[1] += -1
 
-        pecas['esquerda']=posicaoInvestigada[0]
-        posicaoInvestigada = [None,x,y]
+        pecas["esquerda"] = posicaoInvestigada[0]
+        posicaoInvestigada = [None, x, y]
 
-        #encontra peça a direita
-        while(posicaoInvestigada[0]==None):
-            if(x==10 or posicaoInvestigada[1]==10):
+        # encontra peça a direita
+        while posicaoInvestigada[0] == None:
+            if x == 10 or posicaoInvestigada[1] == 10:
                 posicaoInvestigada[0] = pecavazia
             else:
-                if(self.matrix[x+1][y].tiposIguais(pecavazia) == False):
-                    posicaoInvestigada[0] = self.matrix[x+1][y]
+                if self.matrix[x + 1][y].tiposIguais(pecavazia) == False:
+                    posicaoInvestigada[0] = self.matrix[x + 1][y]
             posicaoInvestigada[1] += 1
 
-        pecas['direita']=posicaoInvestigada[0]
+        pecas["direita"] = posicaoInvestigada[0]
         return pecas
-
 
     def printInTerminal(self):
         self.printInWeb()

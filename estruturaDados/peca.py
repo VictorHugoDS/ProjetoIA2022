@@ -12,10 +12,9 @@ class Peca:
     def morte(self):
         del self
 
-<<<<<<< HEAD
-    def tiposIguais(self,peca):
+    def tiposIguais(self, peca):
         return self.tipo == peca.tipo
-=======
+
     def alterarPosicao(self, x, y):
         self.x = x
         self.y = y
@@ -31,4 +30,3 @@ class Peca:
 
     def direita(self):
         self.x += 1
->>>>>>> c1a64da95ec36d3be19c555bb63012aecf311dc6
