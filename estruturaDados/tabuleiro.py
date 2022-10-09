@@ -1,15 +1,6 @@
 from copyreg import constructor
 
-
-class Peca:
-    def __init__(self, tipo, x: int, y: int):
-        self.tipo = tipoPeca[tipo]
-        self.x = x
-        self.y = y
-
-    def morte(self):
-        del self
-
+from peca import Peca
 
 tipoPeca = {"mercenario": "merc", "soldado": "sold", "vazio": None, "rei": "king"}
 
@@ -111,7 +102,8 @@ class Tabuleiro:
                 x = posicao[0]
                 y = posicao[1]
                 self.matrix[x][y] = Peca(peca["tipo"], x, y)
-        self.printInTerminal()
+        print("[Tabuleiro] Tabuleiro inicializado com sucesso!")
+        print()
 
     def printInTerminal(self):
         self.printInWeb()
@@ -123,6 +115,8 @@ class Tabuleiro:
                 else:
                     print(tipo, end=" ")
             print()
+        print()
+        print("[Tabuleiro] Tabuleiro impresso no terminal com sucesso!")
 
     def printInWeb(self):
         html = ""

@@ -1,4 +1,3 @@
-import string
 from enumPeca import tipoPeca
 
 
