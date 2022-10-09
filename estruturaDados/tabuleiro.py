@@ -1,7 +1,7 @@
 from copyreg import constructor
 
 from peca import Peca
-from contants import TabuleiroTamanho
+from contants import TabuleiroTamanho, PontosDeVitoria
 from utils import DevLog
 
 tipoPeca = {"mercenario": "merc", "soldado": "sold", "vazio": None, "rei": "king"}
@@ -172,10 +172,15 @@ class Tabuleiro:
         for linha in self.matrix:
             for peca in linha:
                 tipo = peca.tipo
+                x = peca.x
+                y = peca.y
+
                 if tipo == None:
+                    print(" ", end=" ")
                     DevLog("----", end=" ")
                 else:
                     DevLog(tipo, end=" ")
+
             DevLog()
         DevLog()
         DevLog("[Tabuleiro] Tabuleiro impresso no terminal com sucesso!")
