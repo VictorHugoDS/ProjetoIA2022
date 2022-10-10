@@ -122,11 +122,23 @@ class Tabuleiro:
                     pecas.append(peca)
         return pecas
 
+    def verificarSeEntre2casas(self,x1,y1,x2,y2,peca:Peca):
+        equacao = (y1-y2)*peca.x + (x2-x1) * peca.y + (x1*y2 - x2*y1)
+        return equacao == 0
+
+    def verificarSeEntre2casas(self,x1,y1,x2,y2,x,y):
+        equacao = (y1-y2)*x + (x2-x1) * y + (x1*y2 - x2*y1)
+        return equacao == 0
+
+    def casasDeAlinhamento(self,peca1,peca2):
+        return[(peca1.x,peca2.y),(peca2.x,peca1.y)]
+
+
     def pecasProximasAUmaPeca(self, peca: Peca):
 
         x = peca.x
         y = peca.y
-        pecas = {}
+        pecas = {"superior":None,"inferior":None,"esquerda":None,"direita":None}
         posicaoInvestigada = [None, x, y]
         pecavazia = Peca("vazio", x, y)
 

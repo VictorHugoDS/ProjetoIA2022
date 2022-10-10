@@ -1,3 +1,4 @@
+from typing import Tuple
 from enumPeca import tipoPeca
 
 from contants import TabuleiroTamanho
@@ -12,8 +13,17 @@ class Peca:
     def morte(self):
         del self
 
-    def tiposIguais(self, peca):
+    def tiposIguais(self,peca):
         return self.tipo == peca.tipo
+
+    def estaNaPosicao(self,tupla:Tuple):
+        return self.x == tupla(0) and self.y == tupla(1)
+
+    def estaEmUmaDasPosicoes(self,lista:list[Tuple]):
+        for posicao in lista:
+            if(self.estaNaPosicao(posicao) == True):
+                return True
+        return False
 
     def alterarPosicao(self, x, y):
         self.x = x
