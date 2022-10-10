@@ -4,18 +4,22 @@ from tabuleiro import Tabuleiro
 from peca import Peca
 from contants import PosicoesProximasTrono,PontosDeVitoria
 from enumPeca import tipoPeca
+import random
 
 # tipos de movimentos
 
-# Comer um mercenário -> 4
-eat = 4
+# Comer um mercenário -> 5
+eat = 5
+
 # Permitir Rei chegar ao objetivo -> 10
 goToWin = 10
-# Proteger o Rei -> 6
-defKing = 6
-# Proteger o Rei Comendo uma Peça -> 12
-# Colocar-se em perigo -> -2
+
+# Proteger o Rei entrando na frente de um mercenário -> 7
+defKing = 8
+
 # Abrir Caminho para o Rei -> 3
+
+#random -> 0
 
 
 def verificaSePodeComer(tabuleiro:Tabuleiro,soldado:Peca,mercenario:Peca):
@@ -57,11 +61,13 @@ def comerUmaPeca(vetorPecas,melhorResultado,soldado):
                 else:
                     melhorResultado['x']= peca.x + 1
 
+
 def alteraMelhorResultado(peso,melhorResultado,x,y):
     if(melhorResultado['peso']<peso):
         melhorResultado['peso']=peso
         melhorResultado['x'] = x
         melhorResultado['y'] = y
+
 
 
 def melhorMovimentoSoldado(tabuleiro:Tabuleiro, soldado:Peca):
@@ -80,16 +86,20 @@ def melhorMovimentoSoldado(tabuleiro:Tabuleiro, soldado:Peca):
     comerUmaPeca(vetorPecas,melhorResultado,soldado)
 
 
-
     pecasProximas = tabuleiro.pecasProximasAUmaPeca(rei)
 
     pecaKingSuperior=pecasProximas["superior"]
     pecaKingInferior=pecasProximas["inferior"]
     pecaKingEsquerda=pecasProximas["esquerda"]
     pecaKingDireita=pecasProximas["direita"]
-    vetorPecasProximasKing = [PecaSuperior,PecaInferior,PecaEsquerda,PecaDireita]
+    vetorPecasProximasKing = [pecaKingSuperior,pecaKingInferior,pecaKingEsquerda,pecaKingDireita]
 
     protejamORei(vetorPecasProximasKing,tabuleiro,rei,soldado,xRei,yRei)
+    
+    randowMoviment = random.randint(0,3)
+    # verificar quais são os movimentos válidos
+    # escolher um aleatório
+    # mover uma quantidade de casas aleatória
     
 
 
