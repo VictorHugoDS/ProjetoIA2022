@@ -8,21 +8,21 @@ import random
 
 # tipos de movimentos
 
-# Comer um mercenário -> 5
-eat = 5
+# Comer um mercenário -> 3
+eat = 3
 
-# Permitir Rei chegar ao objetivo -> 10
-goToWin = 10
+# Permitir Rei chegar ao objetivo -> 6
+goToWin = 6
 
-# Proteger o Rei entrando na frente de um mercenário -> 7
-defKing = 8
+# Proteger o Rei entrando na frente de um mercenário -> 5
+defKing = 5
 
-# Abrir Caminho para o Rei -> 3
-from contants import RamificacoesMaximas
+#random -> 0
+yoggSaron = 0
+
 
 turnoPosiveis = "mercenario" | "soldado"
 
-#random -> 0
 
 
 def verificaSePodeComer(tabuleiro: Tabuleiro, soldado: Peca, mercenario: Peca):
@@ -36,25 +36,26 @@ def verificaSePodeComer(tabuleiro: Tabuleiro, soldado: Peca, mercenario: Peca):
     return False
 
 
-def protejamORei(vetorPecasProximasKing, tabuleiro, rei, soldado, xRei, yRei):
+def protejamORei(vetorPecasProximasKing, tabuleiro:Tabuleiro, rei, soldado, xRei, yRei):
     for peca in vetorPecasProximasKing:
         if peca.tipo == tipoPeca["mercenario"]:
             for valores in tabuleiro.casasDeAlinhamento(rei, soldado):
                 resultado = tabuleiro.verificarSeEntre2casas(
                     xRei, yRei, peca.x, peca.y, valores(0), valores(1)
                 )
-                if resultado:
-                    alteraMelhorResultado(defKing, valores(0), valores(1))
+                if resultado and tabuleiro.podeMovimentar(soldado,valores(0), valores(1)):
+                    alteraMelhorResultado(defKing,'Defender Rei', valores(0), valores(1))
                     break
 
 
-def comerUmaPeca(vetorPecas, melhorResultado, soldado):
+def comerUmaPeca(vetorPecas, soldado):
     if melhorResultado["peso"] > eat:
         return 0
 
     for peca in vetorPecas:
         if peca.tipo == tipoPeca["soldado"] and verificaSePodeComer(peca):
             melhorResultado["peso"] = eat
+            melhorResultado["estrategia"] = 'Comer Mercenário'
             if peca.x == soldado.x:
                 melhorResultado["x"] = soldado.x
                 if soldado.y > peca.y:
@@ -69,11 +70,67 @@ def comerUmaPeca(vetorPecas, melhorResultado, soldado):
                     melhorResultado["x"] = peca.x + 1
 
 
-def alteraMelhorResultado(peso, melhorResultado, x, y):
+def alteraMelhorResultado(peso,estrategia, x, y):
     if melhorResultado["peso"] < peso:
         melhorResultado["peso"] = peso
+        melhorResultado["estrategia"] = estrategia
         melhorResultado["x"] = x
         melhorResultado["y"] = y
+
+def moveAleatorio(soldado,pecaLimite,direcao):
+    x= None
+    y= None
+    match direcao:
+        case 'esquerda':
+            x = pecaLimite.x
+            diff = soldado.y - pecaLimite.y
+            y = soldado.y - random.randint(1,abs(diff))
+        case 'direita':
+            x = pecaLimite.x
+            diff = soldado.y - pecaLimite.y
+            y = soldado.y + random.randint(1,abs(diff))
+        case 'superior':
+            y = pecaLimite.y
+            diff = soldado.x - pecaLimite.x
+            y = soldado.x - random.randint(1,abs(diff))
+        case 'inferior':
+            y = pecaLimite.y
+            diff = soldado.x - pecaLimite.x
+            y = soldado.x + random.randint(1,abs(diff))
+    alteraMelhorResultado(yoggSaron,'jogar em uma posição aleatória',x,y)
+    
+    
+
+def movimentoRandow(soldado: Peca,tabuleiro: Tabuleiro,vetorPecas):
+    podeMover = {
+        'esquerda':True,
+        'direita':True,
+        'superior':True,
+        'inferior':True,
+    }
+
+    posicoes = ['superior','inferior','esquerda','direita']
+    i=0
+    for peca in vetorPecas:
+        if(tabuleiro.verificarAdjacencias(soldado,peca)):
+            podeMover[posicoes[i]]=False
+        i+=1
+
+    listaDePossibilidades = []
+    for key in podeMover:
+        if(podeMover[key]==True):
+            listaDePossibilidades.append(key)
+    direcaoEscolhida = listaDePossibilidades[random.randint(0,len(listaDePossibilidades))]
+
+    pecaEscolhida = None
+    i=0
+    for peca in vetorPecas:
+        if(posicoes[i]==direcaoEscolhida):
+            pecaEscolhida=peca
+            break
+
+    moveAleatorio(soldado,pecaEscolhida,direcaoEscolhida)
+
 
 
 def melhorMovimento(tabuleiro: Tabuleiro, turno: turnoPosiveis):
@@ -135,7 +192,9 @@ def melhorMovimentoSoldado(tabuleiro: Tabuleiro, soldado: Peca):
     xRei = tabuleiro.posicaoRei(0)
     yRei = tabuleiro.posicaoRei(1)
     rei = tabuleiro.matrix[xRei][yRei]
-    melhorResultado = {"peso": 0, "x": None, "y": None}
+    global melhorResultado 
+
+    melhorResultado = {"peso": 0,'estrategia':None, "x": None, "y": None}
 
     pecasProximas = tabuleiro.pecasProximasAUmaPeca(soldado)
 
@@ -144,7 +203,7 @@ def melhorMovimentoSoldado(tabuleiro: Tabuleiro, soldado: Peca):
     PecaEsquerda=pecasProximas["esquerda"]
     PecaDireita=pecasProximas["direita"]
     vetorPecas = [PecaSuperior,PecaInferior,PecaEsquerda,PecaDireita]
-    comerUmaPeca(vetorPecas,melhorResultado,soldado)
+    comerUmaPeca(vetorPecas,soldado)
 
 
     pecasProximas = tabuleiro.pecasProximasAUmaPeca(rei)
@@ -156,15 +215,9 @@ def melhorMovimentoSoldado(tabuleiro: Tabuleiro, soldado: Peca):
     vetorPecasProximasKing = [pecaKingSuperior,pecaKingInferior,pecaKingEsquerda,pecaKingDireita]
 
     protejamORei(vetorPecasProximasKing,tabuleiro,rei,soldado,xRei,yRei)
-    
-    randowMoviment = random.randint(0,3)
-    # verificar quais são os movimentos válidos
-    # escolher um aleatório
-    # mover uma quantidade de casas aleatória
-    
+    movimentoRandow(soldado,tabuleiro,vetorPecas)
 
-    protejamORei(vetorPecasProximasKing, tabuleiro, rei, soldado, xRei, yRei)
-
+    return melhorResultado
     # Terminar no final
     # for ponto in PontosDeVitoria:
     #     if(tabuleiro.verificarSeEntre2casas(ponto[0],ponto[1],xRei,yRei,soldado)):

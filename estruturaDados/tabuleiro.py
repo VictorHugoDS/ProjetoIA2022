@@ -54,6 +54,22 @@ class Tabuleiro:
     def pegarPosicaoRei(self):
         return self.posicaoRei
 
+    def podeMovimentar(peca,xfuturo,yfuturo):
+        if(peca.x==xfuturo):
+            [cima,baixo,e,d]=Tabuleiro.pecasProximasAUmaPeca(peca)       
+            if(yfuturo > peca.y):
+                return baixo.y>yfuturo
+            else:
+                return cima.y<yfuturo
+        if(peca.y==yfuturo):
+            [c,b,esquerda,direita]=Tabuleiro.pecasProximasAUmaPeca(peca)       
+            if(xfuturo > peca.x):
+                return direita.x>xfuturo
+            else:
+                return esquerda.x<xfuturo
+        return False
+
+
     def moverPeca(self, peca, x, y):
         if peca.tipo == "king":
             self.posicaoRei = (x, y)
@@ -87,6 +103,12 @@ class Tabuleiro:
             return True
 
         return False
+
+    def verificarAdjacencias(self,pecaPrincipal:Peca,pecaSegundaria:Peca):
+        verificaX = pecaPrincipal.x == pecaSegundaria.x +1 or pecaPrincipal.x == pecaSegundaria.x -1
+        verificaY = pecaPrincipal.y == pecaSegundaria.y +1 or pecaPrincipal.y == pecaSegundaria.y -1
+        return verificaX or verificaY
+        
 
     # retorna uma lista de tuplas com as posições possíveis
     def checarMovimentosPossiveis(self, peca):
