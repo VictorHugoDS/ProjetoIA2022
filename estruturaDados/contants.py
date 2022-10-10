@@ -1,10 +1,12 @@
 TabuleiroTamanho = 11
-PontosDeVitoria = [
+PosicoesVitoria = [
     (0, 0),
     (0, 11 - 1),
     (11 - 1, 0),
     (11 - 1, 11 - 1),
 ]
+
+RamificacoesMaximas = 4
 
 PosicoesIniciais = [
     {

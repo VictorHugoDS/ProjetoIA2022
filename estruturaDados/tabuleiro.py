@@ -2,7 +2,7 @@ from copyreg import constructor
 from time import sleep
 
 from peca import Peca
-from contants import TabuleiroTamanho, PosicoesIniciais
+from contants import TabuleiroTamanho, PosicoesIniciais, PosicoesVitoria
 from utils import DevLog
 
 tipoPeca = {"mercenario": "merc", "soldado": "sold", "vazio": None, "rei": "king"}
@@ -62,10 +62,27 @@ class Tabuleiro:
         self.matrix[x][y] = peca
         peca.mover(x, y)
 
+    def copia(self):
+        copia = Tabuleiro()
+        copia.matrix = self.matrix
+        return copia
+
     def checarMovimento(self, x, y):
         tabuleiro = self.matrix
         if x < 0 or x > TabuleiroTamanho or y < 0 or y > TabuleiroTamanho:
             return False
+
+        # trono
+        if x == 5 and y == 5:
+            return False
+
+        # checa se esta na posicao de escapatoria
+        for vitoriaXY in PosicoesVitoria:
+            xVitoria = vitoriaXY[0]
+            yVitoria = vitoriaXY[1]
+            if x == xVitoria and y == yVitoria:
+                return False
+
         if tabuleiro[x][y].tipo == None:
             return True
 
@@ -123,7 +140,6 @@ class Tabuleiro:
         return pecas
 
     def pecasProximasAUmaPeca(self, peca: Peca):
-
         x = peca.x
         y = peca.y
         pecas = {}
