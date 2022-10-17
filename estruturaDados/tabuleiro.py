@@ -1,5 +1,6 @@
 from copyreg import constructor
 from time import sleep
+from estruturaDados.bestMoveSoldier import verificaSePodeComer
 
 from peca import Peca
 from contants import TabuleiroTamanho, PosicoesIniciais, PosicoesVitoria
@@ -76,6 +77,8 @@ class Tabuleiro:
         self.matrix[peca.x][peca.y] = Peca("vazio", peca.x, peca.y)
         peca.alterarPosicao(x, y)
         self.matrix[x][y] = peca
+
+        # checar pecas proximas em cima, baixo, direita, eq
 
     def copia(self):
         copia = Tabuleiro()

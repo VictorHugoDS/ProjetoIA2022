@@ -1,6 +1,7 @@
 # Define qual o melhor movimento para soldado
 
 from cgi import test
+from re import M
 from tabuleiro import Tabuleiro
 from peca import Peca
 from contants import PosicoesProximasTrono
@@ -83,22 +84,23 @@ def alteraMelhorResultado(peso, estrategia, x, y):
         melhorResultado["y"] = y
 
 
-def moveAleatorio(soldado, pecaLimite, direcao):
-    x = 0
-    y = 0
+def moveAleatorio(soldado, direcao):
+    x = None
+    y = None
 
-    if direcao == "superior":
-        x = soldado.x
-        y = pecaLimite.y - 1
-    elif direcao == "inferior":
-        x = soldado.x
-        y = pecaLimite.y + 1
-    elif direcao == "esquerda":
-        x = pecaLimite.x - 1
-        y = soldado.y
-    elif direcao == "direita":
-        x = pecaLimite.x + 1
-        y = soldado.y
+    match direcao:
+        case "esquerda":
+            x = soldado.x - 1
+            y = soldado.y
+        case "direita":
+            x = soldado.x + 1
+            y = soldado.y
+        case "superior":
+            x = soldado.x
+            y = soldado.y - 1
+        case "inferior":
+            x = soldado.x
+            y = soldado.y + 1
 
     alteraMelhorResultado(yoggSaron, "jogar em uma posição aleatória", x, y)
 
@@ -113,18 +115,20 @@ def movimentoRandow(soldado: Peca, tabuleiro: Tabuleiro, vetorPecas):
 
     posicoes = ["superior", "inferior", "esquerda", "direita"]
     i = 0
+
     for peca in vetorPecas:
         if tabuleiro.verificarAdjacencias(soldado, peca):
             podeMover[posicoes[i]] = False
         i += 1
 
+    print(podeMover)
     listaDePossibilidades = []
     for key in podeMover:
         if podeMover[key] == True:
             listaDePossibilidades.append(key)
 
     if len(listaDePossibilidades) > 0:
-        moveAleatorio(soldado, vetorPecas[0], random.choice(listaDePossibilidades))
+        moveAleatorio(soldado, random.choice(listaDePossibilidades))
 
 
 def melhorMovimento(tabuleiro: Tabuleiro, turno):
@@ -139,9 +143,28 @@ def melhorMovimento(tabuleiro: Tabuleiro, turno):
         pesoMovimento = melhorMovimentoSoldado(tabuleiro, peca)
         pesosMovimentos.append([pesoMovimento, peca])
 
-    print(pesosMovimentos)
+    # sort
+    MaiorPeso = 9999
+    for i in range(len(pesosMovimentos)):
+        for j in range(len(pesosMovimentos)):
+            print(pesosMovimentos[i][0]["peso"])
+            if pesosMovimentos[i][0]["peso"] > pesosMovimentos[j][0]["peso"]:
+                aux = pesosMovimentos[i]
+                pesosMovimentos[i] = pesosMovimentos[j]
+                pesosMovimentos[j] = aux
 
-    return []
+    # checar se movimentos é valido
+    pesosValidos = []
+    for i in range(len(pesosMovimentos)):
+        # check if x and y exists
+        if pesosMovimentos[i][0]["x"] != None and pesosMovimentos[i][0]["y"] != None:
+            if tabuleiro.checarMovimento(
+                pesosMovimentos[i][0]["x"],
+                pesosMovimentos[i][0]["y"],
+            ):
+                pesosValidos.append(pesosMovimentos[i])
+
+    return pesosValidos[0]
 
 
 def melhorMovimentoRamificado(tabuleiro: Tabuleiro, turno, profundidade: int):
