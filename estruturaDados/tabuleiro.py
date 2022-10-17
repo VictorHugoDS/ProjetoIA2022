@@ -54,29 +54,28 @@ class Tabuleiro:
     def pegarPosicaoRei(self):
         return self.posicaoRei
 
-    def podeMovimentar(peca,xfuturo,yfuturo):
-        if(peca.x==xfuturo):
-            [cima,baixo,e,d]=Tabuleiro.pecasProximasAUmaPeca(peca)       
-            if(yfuturo > peca.y):
-                return baixo.y>yfuturo
+    def podeMovimentar(peca, xfuturo, yfuturo):
+        if peca.x == xfuturo:
+            [cima, baixo, e, d] = Tabuleiro.pecasProximasAUmaPeca(peca)
+            if yfuturo > peca.y:
+                return baixo.y > yfuturo
             else:
-                return cima.y<yfuturo
-        if(peca.y==yfuturo):
-            [c,b,esquerda,direita]=Tabuleiro.pecasProximasAUmaPeca(peca)       
-            if(xfuturo > peca.x):
-                return direita.x>xfuturo
+                return cima.y < yfuturo
+        if peca.y == yfuturo:
+            [c, b, esquerda, direita] = Tabuleiro.pecasProximasAUmaPeca(peca)
+            if xfuturo > peca.x:
+                return direita.x > xfuturo
             else:
-                return esquerda.x<xfuturo
+                return esquerda.x < xfuturo
         return False
-
 
     def moverPeca(self, peca, x, y):
         if peca.tipo == "king":
             self.posicaoRei = (x, y)
 
         self.matrix[peca.x][peca.y] = Peca("vazio", peca.x, peca.y)
+        peca.alterarPosicao(x, y)
         self.matrix[x][y] = peca
-        peca.mover(x, y)
 
     def copia(self):
         copia = Tabuleiro()
@@ -104,11 +103,16 @@ class Tabuleiro:
 
         return False
 
-    def verificarAdjacencias(self,pecaPrincipal:Peca,pecaSegundaria:Peca):
-        verificaX = pecaPrincipal.x == pecaSegundaria.x +1 or pecaPrincipal.x == pecaSegundaria.x -1
-        verificaY = pecaPrincipal.y == pecaSegundaria.y +1 or pecaPrincipal.y == pecaSegundaria.y -1
+    def verificarAdjacencias(self, pecaPrincipal: Peca, pecaSegundaria: Peca):
+        verificaX = (
+            pecaPrincipal.x == pecaSegundaria.x + 1
+            or pecaPrincipal.x == pecaSegundaria.x - 1
+        )
+        verificaY = (
+            pecaPrincipal.y == pecaSegundaria.y + 1
+            or pecaPrincipal.y == pecaSegundaria.y - 1
+        )
         return verificaX or verificaY
-        
 
     # retorna uma lista de tuplas com as posições possíveis
     def checarMovimentosPossiveis(self, peca):
@@ -161,22 +165,21 @@ class Tabuleiro:
                     pecas.append(peca)
         return pecas
 
-    def verificarSeEntre2casas(self,x1,y1,x2,y2,peca:Peca):
-        equacao = (y1-y2)*peca.x + (x2-x1) * peca.y + (x1*y2 - x2*y1)
+    def verificarSeEntre2casas(self, x1, y1, x2, y2, peca: Peca):
+        equacao = (y1 - y2) * peca.x + (x2 - x1) * peca.y + (x1 * y2 - x2 * y1)
         return equacao == 0
 
-    def verificarSeEntre2casas(self,x1,y1,x2,y2,x,y):
-        equacao = (y1-y2)*x + (x2-x1) * y + (x1*y2 - x2*y1)
+    def verificarSeEntre2casas(self, x1, y1, x2, y2, x, y):
+        equacao = (y1 - y2) * x + (x2 - x1) * y + (x1 * y2 - x2 * y1)
         return equacao == 0
 
-    def casasDeAlinhamento(self,peca1,peca2):
-        return[(peca1.x,peca2.y),(peca2.x,peca1.y)]
-
+    def casasDeAlinhamento(self, peca1, peca2):
+        return [(peca1.x, peca2.y), (peca2.x, peca1.y)]
 
     def pecasProximasAUmaPeca(self, peca: Peca):
         x = peca.x
         y = peca.y
-        pecas = {"superior":None,"inferior":None,"esquerda":None,"direita":None}
+        pecas = {"superior": None, "inferior": None, "esquerda": None, "direita": None}
         posicaoInvestigada = [None, x, y]
         pecavazia = Peca("vazio", x, y)
 
@@ -237,8 +240,8 @@ class Tabuleiro:
                 y = peca.y
 
                 if tipo == None:
-                    print(" ", end=" ")
-                    DevLog("----", end=" ")
+                    print("", end=" ")
+                    DevLog("---", end=" ")
                 else:
                     DevLog(tipo, end=" ")
 
