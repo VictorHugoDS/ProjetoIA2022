@@ -1,12 +1,12 @@
 TabuleiroTamanho = 11
 PosicoesVitoria = [
     (0, 0),
-    (0, 11 - 1),
-    (11 - 1, 0),
-    (11 - 1, 11 - 1),
+    (0, TabuleiroTamanho - 1),
+    (TabuleiroTamanho - 1, 0),
+    (TabuleiroTamanho - 1, TabuleiroTamanho - 1),
 ]
 
-RamificacoesMaximas = 4
+RamificacoesMaximas = 5
 
 PosicoesIniciais = [
     {
@@ -70,6 +70,4 @@ PosicoesIniciais = [
     },
 ]
 
-PosicoesProximasTrono = [
-    (5,4),(5,7),(4,5),(6,5)
-]
+PosicoesProximasTrono = [(5, 4), (5, 7), (4, 5), (6, 5)]

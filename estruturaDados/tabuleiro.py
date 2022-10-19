@@ -1,6 +1,5 @@
 from copyreg import constructor
 from time import sleep
-from estruturaDados.bestMoveSoldier import verificaSePodeComer
 
 from peca import Peca
 from contants import TabuleiroTamanho, PosicoesIniciais, PosicoesVitoria
@@ -78,7 +77,38 @@ class Tabuleiro:
         peca.alterarPosicao(x, y)
         self.matrix[x][y] = peca
 
-        # checar pecas proximas em cima, baixo, direita, eq
+        # verifica se existe pecas proximas
+        pecasProximas = self.pecasProximasAUmaPeca(peca)
+        # remove key do dicionario
+        pecasProximasValue = {k: v for k, v in pecasProximas.items() if v != None}
+        # FOR WITH INDICE
+        for i, pecaProximaDirecao in enumerate(pecasProximasValue):
+            print("pecaProximaDirecao", pecaProximaDirecao)
+            # get pecasProximas
+            pecaProxima = pecasProximasValue[pecaProximaDirecao]
+            print("pecaProxima", pecaProxima)
+
+            # verifica se a peca proxima eh de outro tipo
+            if peca.tipo != pecaProxima.tipo:
+                pecaAdjancente = pecaProxima
+                # pegar as proximas da adjancente
+                pecasProximasAdjancentes = self.pecasProximasAUmaPeca(pecaAdjancente)
+                # remove key do dicionario
+                pecasProximasAdjancentesValue = {
+                    k: v for k, v in pecasProximasAdjancentes.items() if v != None
+                }
+                # FOR WITH INDICE
+                for j, pecaProximaDirecaoAdjancente in enumerate(
+                    pecasProximasAdjancentesValue
+                ):
+                    pecaAdjancenteDaAdjancente = pecasProximasAdjancentesValue[
+                        pecaProximaDirecaoAdjancente
+                    ]
+                    if (
+                        peca.x == pecaAdjancenteDaAdjancente.x
+                        and peca.y == pecaAdjancenteDaAdjancente.y
+                    ):
+                        continue
 
     def copia(self):
         copia = Tabuleiro()
